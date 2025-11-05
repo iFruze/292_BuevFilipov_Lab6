@@ -3,8 +3,12 @@ import { fetchData } from '../api.js';
 export async function renderComments(container) {
   const comments = await fetchData('comments');
 
+  const controlContainer = document.createElement('div');
+  const listContainer = document.createElement('div');
+
   const input = document.createElement('input');
   input.placeholder = 'Поиск по имени или тексту комментария';
+
   input.addEventListener('input', () => {
     const value = input.value.toLowerCase();
     const filtered = comments.filter(comment =>
@@ -14,17 +18,21 @@ export async function renderComments(container) {
     renderList(filtered);
   });
 
-  container.appendChild(input);
+  controlContainer.appendChild(input);
+  container.appendChild(controlContainer);
+  container.appendChild(listContainer);
 
   function renderList(list) {
+    listContainer.innerHTML = ''; // очищаем только список
+
     const ul = document.createElement('ul');
-    ul.innerHTML = '';
     list.forEach(comment => {
       const li = document.createElement('li');
       li.innerHTML = `<strong>${comment.name}</strong><br>${comment.body}`;
       ul.appendChild(li);
     });
-    container.appendChild(ul);
+
+    listContainer.appendChild(ul);
   }
 
   renderList(comments);
